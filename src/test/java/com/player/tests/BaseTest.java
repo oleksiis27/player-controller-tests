@@ -1,6 +1,6 @@
 package com.player.tests;
 
-import com.player.api.PlayerApi;
+import com.player.api.PlayerApiClient;
 import com.player.config.AppConfig;
 import com.player.data.TestDataHelper;
 import com.player.models.PlayerDto;
@@ -24,7 +24,7 @@ public abstract class BaseTest {
 
     @BeforeClass
     public void setUp() {
-        playerSteps = new PlayerSteps(new PlayerApi());
+        playerSteps = new PlayerSteps(new PlayerApiClient());
     }
 
     @AfterClass(alwaysRun = true)

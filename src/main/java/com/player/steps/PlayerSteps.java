@@ -1,6 +1,6 @@
 package com.player.steps;
 
-import com.player.api.PlayerApi;
+import com.player.api.PlayerApiClient;
 import com.player.models.PlayerDto;
 import com.player.models.StatusCode;
 import io.qameta.allure.Step;
@@ -15,9 +15,9 @@ public class PlayerSteps {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerSteps.class);
 
-    private final PlayerApi playerApi;
+    private final PlayerApiClient playerApi;
 
-    public PlayerSteps(PlayerApi playerApi) {
+    public PlayerSteps(PlayerApiClient playerApi) {
         this.playerApi = playerApi;
     }
 

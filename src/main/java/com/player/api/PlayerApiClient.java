@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 
-public class PlayerApi extends BaseApi {
+public class PlayerApiClient extends BaseApiClient {
 
-    private static final Logger log = LoggerFactory.getLogger(PlayerApi.class);
+    private static final Logger log = LoggerFactory.getLogger(PlayerApiClient.class);
 
     public Response createPlayer(String editor, PlayerDto request) {
         log.info("Creating player with editor '{}': {}", editor, request);

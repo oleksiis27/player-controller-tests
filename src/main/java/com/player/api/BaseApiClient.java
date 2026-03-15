@@ -8,11 +8,11 @@ import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
 
-public abstract class BaseApi {
+public abstract class BaseApiClient {
 
     protected final RequestSpecification spec;
 
-    protected BaseApi() {
+    protected BaseApiClient() {
         spec = new RequestSpecBuilder()
                 .setBaseUri(AppConfig.getInstance().baseUrl())
                 .setContentType(ContentType.JSON)
