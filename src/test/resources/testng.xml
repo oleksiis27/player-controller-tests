@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Player API Tests" parallel="methods" thread-count="3">
+<suite name="Player API Tests" parallel="methods">
     <listeners>
         <listener class-name="com.player.listeners.TestListener"/>
+        <listener class-name="com.player.listeners.DynamicThreadListener"/>
     </listeners>
     <test name="All Tests">
         <packages>

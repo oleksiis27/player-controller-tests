@@ -2,11 +2,11 @@ package com.player.steps;
 
 import com.player.api.UpdatePlayerApi;
 import com.player.models.PlayerDto;
+import com.player.models.StatusCode;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class UpdatePlayerSteps {
 
@@ -19,10 +19,10 @@ public class UpdatePlayerSteps {
     }
 
     @Step("Update player ID={playerId} with editor '{editor}'")
-    public PlayerDto update(String editor, Long playerId, PlayerDto request) {
+    public PlayerDto updatePlayer(String editor, Long playerId, PlayerDto request) {
         PlayerDto updated = updatePlayerApi.updatePlayer(editor, playerId, request)
                 .then()
-                .statusCode(200)
+                .statusCode(StatusCode.OK.getCode())
                 .extract()
                 .as(PlayerDto.class);
 

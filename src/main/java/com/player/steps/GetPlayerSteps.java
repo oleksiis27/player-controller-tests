@@ -2,6 +2,7 @@ package com.player.steps;
 
 import com.player.api.GetPlayerApi;
 import com.player.models.PlayerDto;
+import com.player.models.StatusCode;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
@@ -20,23 +21,23 @@ public class GetPlayerSteps {
     public PlayerDto getPlayerById(Long playerId) {
         return getPlayerApi.getPlayer(playerId)
                 .then()
-                .statusCode(200)
+                .statusCode(StatusCode.OK.getCode())
                 .extract()
                 .as(PlayerDto.class);
     }
 
-    @Step("Verify player ID={playerId} does not exist")
-    public boolean isPlayerAbsent(Long playerId) {
+    @Step("Check if player ID={playerId} exists")
+    public boolean playerExists(Long playerId) {
         Response response = getPlayerApi.getPlayer(playerId);
         String body = response.getBody().asString();
-        return body == null || body.isEmpty();
+        return body != null && !body.isEmpty();
     }
 
     @Step("Get all players")
     public List<PlayerDto> getAllPlayers() {
         return getPlayerApi.getAllPlayers()
                 .then()
-                .statusCode(200)
+                .statusCode(StatusCode.OK.getCode())
                 .extract()
                 .jsonPath()
                 .getList("players", PlayerDto.class);

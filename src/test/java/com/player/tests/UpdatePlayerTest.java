@@ -3,6 +3,7 @@ package com.player.tests;
 import com.player.data.TestDataHelper;
 import com.player.models.Gender;
 import com.player.models.PlayerDto;
+import com.player.models.StatusCode;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -14,7 +15,6 @@ import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-
 @Epic("Player Controller")
 @Feature("Update Player")
 public class UpdatePlayerTest extends BaseTest {
@@ -22,12 +22,12 @@ public class UpdatePlayerTest extends BaseTest {
     @Test
     @Story("Positive: Update player age")
     @Severity(SeverityLevel.NORMAL)
-    @Description("Update player age within valid range (16-60) and verify via GET")
+    @Description("Update player age and verify via GET")
     public void testUpdatePlayerAge() {
         PlayerDto player = createTestPlayer();
         PlayerDto update = PlayerDto.builder().age(30).build();
 
-        updateSteps.update(SUPERVISOR, player.getId(), update);
+        updateSteps.updatePlayer(SUPERVISOR, player.getId(), update);
         PlayerDto fetched = getSteps.getPlayerById(player.getId());
 
         Assert.assertEquals(fetched.getAge(), Integer.valueOf(30), "Age should be updated to 30");
@@ -42,7 +42,7 @@ public class UpdatePlayerTest extends BaseTest {
         String newScreenName = TestDataHelper.generateUniqueScreenName();
         PlayerDto update = PlayerDto.builder().screenName(newScreenName).build();
 
-        updateSteps.update(SUPERVISOR, player.getId(), update);
+        updateSteps.updatePlayer(SUPERVISOR, player.getId(), update);
         PlayerDto fetched = getSteps.getPlayerById(player.getId());
 
         Assert.assertEquals(fetched.getScreenName(), newScreenName, "ScreenName should be updated");
@@ -59,7 +59,7 @@ public class UpdatePlayerTest extends BaseTest {
         Gender newGender = current.getGender() == Gender.MALE ? Gender.FEMALE : Gender.MALE;
         PlayerDto update = PlayerDto.builder().gender(newGender).build();
 
-        updateSteps.update(SUPERVISOR, player.getId(), update);
+        updateSteps.updatePlayer(SUPERVISOR, player.getId(), update);
         PlayerDto fetched = getSteps.getPlayerById(player.getId());
 
         Assert.assertEquals(fetched.getGender(), newGender, "Gender should be updated");
@@ -71,9 +71,13 @@ public class UpdatePlayerTest extends BaseTest {
     @Description("Update player password with valid format")
     public void testUpdatePlayerPassword() {
         PlayerDto player = createTestPlayer();
-        PlayerDto update = PlayerDto.builder().password("NewValid1!").build();
+        String newPassword = "NewValid1!";
+        PlayerDto update = PlayerDto.builder().password(newPassword).build();
 
-        updateSteps.update(SUPERVISOR, player.getId(), update);
+        updateSteps.updatePlayer(SUPERVISOR, player.getId(), update);
+        PlayerDto fetched = getSteps.getPlayerById(player.getId());
+
+        Assert.assertEquals(fetched.getPassword(), newPassword, "Password should be updated");
     }
 
     @Test
@@ -90,8 +94,8 @@ public class UpdatePlayerTest extends BaseTest {
 
         Response response = updateSteps.updateExpectingAnyStatus(SUPERVISOR, player2.getId(), update);
 
-        Assert.assertEquals(response.statusCode(), 400,
-                "Duplicate screenName should return 400.");
+        Assert.assertEquals(response.statusCode(), StatusCode.BAD_REQUEST.getCode(),
+                "Duplicate screenName should return 400");
     }
 
     @Test
@@ -105,7 +109,7 @@ public class UpdatePlayerTest extends BaseTest {
 
         Response response = updateSteps.updateExpectingAnyStatus(SUPERVISOR, player.getId(), update);
 
-        Assert.assertEquals(response.statusCode(), 400,
-                "Invalid password should return 400.");
+        Assert.assertEquals(response.statusCode(), StatusCode.BAD_REQUEST.getCode(),
+                "Invalid password should return 400");
     }
 }

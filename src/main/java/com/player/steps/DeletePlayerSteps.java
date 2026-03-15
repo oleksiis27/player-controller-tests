@@ -1,7 +1,7 @@
 package com.player.steps;
 
 import com.player.api.DeletePlayerApi;
-import com.player.api.GetPlayerApi;
+import com.player.models.StatusCode;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.slf4j.Logger;
@@ -12,27 +12,18 @@ public class DeletePlayerSteps {
     private static final Logger log = LoggerFactory.getLogger(DeletePlayerSteps.class);
 
     private final DeletePlayerApi deletePlayerApi;
-    private final GetPlayerApi getPlayerApi;
 
-    public DeletePlayerSteps(DeletePlayerApi deletePlayerApi, GetPlayerApi getPlayerApi) {
+    public DeletePlayerSteps(DeletePlayerApi deletePlayerApi) {
         this.deletePlayerApi = deletePlayerApi;
-        this.getPlayerApi = getPlayerApi;
     }
 
-    @Step("Delete player ID={playerId} with editor '{editor}' and verify")
-    public void deleteAndVerify(String editor, Long playerId) {
+    @Step("Delete player ID={playerId} with editor '{editor}'")
+    public void deletePlayer(String editor, Long playerId) {
         deletePlayerApi.deletePlayer(editor, playerId)
                 .then()
-                .statusCode(204);
+                .statusCode(StatusCode.NO_CONTENT.getCode());
 
-        log.info("Player ID={} deleted, verifying via GET", playerId);
-
-        Response getResponse = getPlayerApi.getPlayer(playerId);
-        String body = getResponse.getBody().asString();
-
-        if (body != null && !body.isEmpty()) {
-            log.warn("Deleted player ID={} still returns data: {}", playerId, body);
-        }
+        log.info("Player ID={} deleted", playerId);
     }
 
     @Step("Attempt to delete player ID={playerId} (expect possible error)")

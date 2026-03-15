@@ -10,6 +10,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class TestDataHelper {
 
+    private TestDataHelper() {}
+
     private static final Faker faker = new Faker();
 
     public static PlayerDto validPreparedPlayer() {

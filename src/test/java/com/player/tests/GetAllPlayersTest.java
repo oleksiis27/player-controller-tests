@@ -1,6 +1,5 @@
 package com.player.tests;
 
-import com.player.data.TestDataHelper;
 import com.player.models.PlayerDto;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
@@ -22,9 +21,7 @@ public class GetAllPlayersTest extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Description("After creating a player, it should appear in the get all players list")
     public void testCreatedPlayerAppearsInList() {
-        PlayerDto request = TestDataHelper.validPreparedPlayer();
-        PlayerDto created = createSteps.createPlayer(SUPERVISOR, request);
-        trackPlayerForCleanup(created.getId());
+        PlayerDto created = createTestPlayer();
 
         List<Long> playerIds = getSteps.getAllPlayerIds();
 
@@ -37,10 +34,9 @@ public class GetAllPlayersTest extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Description("After deleting a player, it should no longer appear in the get all players list")
     public void testDeletedPlayerDisappearsFromList() {
-        PlayerDto request = TestDataHelper.validPreparedPlayer();
-        PlayerDto created = createSteps.createPlayer(SUPERVISOR, request);
+        PlayerDto created = createTestPlayer();
 
-        deleteSteps.deleteAndVerify(SUPERVISOR, created.getId());
+        deleteSteps.deletePlayer(SUPERVISOR, created.getId());
 
         List<Long> playerIds = getSteps.getAllPlayerIds();
 

@@ -4,6 +4,7 @@ import com.player.data.TestDataHelper;
 import com.player.models.Gender;
 import com.player.models.PlayerDto;
 import com.player.models.Role;
+import com.player.models.StatusCode;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -15,7 +16,6 @@ import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 
 @Epic("Player Controller")
 @Feature("Create Player")
@@ -42,12 +42,10 @@ public class CreatePlayerTest extends BaseTest {
     @Description("Creating player with duplicate login should return error, but returns existing player")
     @Issue("BUG-003")
     public void testCreatePlayerWithDuplicateLogin() {
-        PlayerDto request1 = TestDataHelper.validPreparedPlayer();
-        PlayerDto created1 = createSteps.createPlayer(SUPERVISOR, request1);
-        trackPlayerForCleanup(created1.getId());
+        PlayerDto created1 = createTestPlayer();
 
         PlayerDto request2 = PlayerDto.builder()
-                .age(25).gender(Gender.FEMALE).login(request1.getLogin())
+                .age(25).gender(Gender.FEMALE).login(created1.getLogin())
                 .password(TestDataHelper.validPassword()).role(Role.USER)
                 .screenName(TestDataHelper.generateUniqueScreenName())
                 .build();
@@ -58,8 +56,8 @@ public class CreatePlayerTest extends BaseTest {
             trackPlayerForCleanup(player.getId());
         }
 
-        Assert.assertEquals(response.statusCode(), 400,
-                "Duplicate login should return 400.");
+        Assert.assertEquals(response.statusCode(), StatusCode.BAD_REQUEST.getCode(),
+                "Duplicate login should return 400");
     }
 
     @Test
@@ -68,22 +66,20 @@ public class CreatePlayerTest extends BaseTest {
     @Description("Creating player with duplicate screenName should return error")
     @Issue("BUG-004")
     public void testCreatePlayerWithDuplicateScreenName() {
-        PlayerDto request1 = TestDataHelper.validPreparedPlayer();
-        PlayerDto created1 = createSteps.createPlayer(SUPERVISOR, request1);
-        trackPlayerForCleanup(created1.getId());
+        PlayerDto created1 = createTestPlayer();
 
         PlayerDto request2 = PlayerDto.builder()
                 .age(25).gender(Gender.MALE).login(TestDataHelper.generateUniqueLogin())
                 .password(TestDataHelper.validPassword()).role(Role.USER)
-                .screenName(request1.getScreenName())
+                .screenName(created1.getScreenName())
                 .build();
 
         Response response = createSteps.createExpectingAnyStatus(SUPERVISOR, request2);
         PlayerDto player = createSteps.extractIfCreated(response);
         if (player != null) trackPlayerForCleanup(player.getId());
 
-        Assert.assertEquals(response.statusCode(), 400,
-                "Duplicate screenName should return 400.");
+        Assert.assertEquals(response.statusCode(), StatusCode.BAD_REQUEST.getCode(),
+                "Duplicate screenName should return 400");
     }
 
     @Test(dataProvider = "invalidPasswords")
@@ -102,16 +98,8 @@ public class CreatePlayerTest extends BaseTest {
         PlayerDto player = createSteps.extractIfCreated(response);
         if (player != null) trackPlayerForCleanup(player.getId());
 
-        Assert.assertEquals(response.statusCode(), 400,
-                "Password (" + reason + ") should return 400.");
-    }
-
-    @DataProvider(name = "editors")
-    public Object[][] editors() {
-        return new Object[][] {
-                { SUPERVISOR },
-                { ADMIN }
-        };
+        Assert.assertEquals(response.statusCode(), StatusCode.BAD_REQUEST.getCode(),
+                "Password (" + reason + ") should return 400");
     }
 
     @DataProvider(name = "invalidPasswords")

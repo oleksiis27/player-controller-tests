@@ -1,6 +1,5 @@
 package com.player.tests;
 
-import com.player.data.TestDataHelper;
 import com.player.models.PlayerDto;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
@@ -22,10 +21,7 @@ public class GetPlayerTest extends BaseTest {
     @Description("GET player should NOT return password — security vulnerability")
     @Issue("BUG-006")
     public void testGetPlayerShouldNotReturnPassword() {
-        PlayerDto request = TestDataHelper.validPreparedPlayer();
-        PlayerDto created = createSteps.createPlayer(SUPERVISOR, request);
-        trackPlayerForCleanup(created.getId());
-
+        PlayerDto created = createTestPlayer();
         PlayerDto fetched = getSteps.getPlayerById(created.getId());
 
         Assert.assertNull(fetched.getPassword(),
@@ -35,9 +31,9 @@ public class GetPlayerTest extends BaseTest {
     @Test
     @Story("Negative: Get player with non-existing ID")
     @Severity(SeverityLevel.NORMAL)
-    @Description("Getting player with non-existing ID should return empty response or error status")
+    @Description("Getting player with non-existing ID should return empty response")
     public void testGetNonExistingPlayer() {
-        Assert.assertTrue(getSteps.isPlayerAbsent(999999999L),
-                "Non-existing player should return empty body");
+        Assert.assertFalse(getSteps.playerExists(999999999L),
+                "Non-existing player should not exist");
     }
 }

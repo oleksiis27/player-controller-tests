@@ -1,6 +1,5 @@
 package com.player.api;
 
-import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ public class GetPlayerApi extends BaseApi {
 
     private static final Logger log = LoggerFactory.getLogger(GetPlayerApi.class);
 
-    @Step("Get player by ID: {playerId}")
     public Response getPlayer(Long playerId) {
         log.info("Getting player by ID: {}", playerId);
         return givenSpec()
@@ -20,7 +18,6 @@ public class GetPlayerApi extends BaseApi {
                 .post("/player/get");
     }
 
-    @Step("Get all players")
     public Response getAllPlayers() {
         log.info("Getting all players");
         return givenSpec()

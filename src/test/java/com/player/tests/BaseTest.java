@@ -13,6 +13,7 @@ import com.player.steps.GetPlayerSteps;
 import com.player.steps.UpdatePlayerSteps;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -32,12 +33,10 @@ public abstract class BaseTest {
 
     @BeforeClass
     public void setUp() {
-        GetPlayerApi getPlayerApi = new GetPlayerApi();
-
         createSteps = new CreatePlayerSteps(new CreatePlayerApi());
-        getSteps = new GetPlayerSteps(getPlayerApi);
+        getSteps = new GetPlayerSteps(new GetPlayerApi());
         updateSteps = new UpdatePlayerSteps(new UpdatePlayerApi());
-        deleteSteps = new DeletePlayerSteps(new DeletePlayerApi(), getPlayerApi);
+        deleteSteps = new DeletePlayerSteps(new DeletePlayerApi());
     }
 
     @AfterClass(alwaysRun = true)
@@ -46,6 +45,14 @@ public abstract class BaseTest {
             deleteSteps.deleteSafely(SUPERVISOR, id);
         }
         createdPlayerIds.clear();
+    }
+
+    @DataProvider(name = "editors")
+    public Object[][] editors() {
+        return new Object[][] {
+                { SUPERVISOR },
+                { ADMIN }
+        };
     }
 
     protected void trackPlayerForCleanup(Long playerId) {
