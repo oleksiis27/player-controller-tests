@@ -80,7 +80,7 @@ public class UpdatePlayerTest extends BaseTest {
     @Story("BUG: Update screenName to existing one")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Updating screenName to an already existing one should fail")
-    @Issue("BUG-008")
+    @Issue("BUG-006")
     public void testUpdateScreenNameToDuplicate() {
         PlayerDto player1 = createTestPlayer();
         PlayerDto player2 = createTestPlayer();
@@ -94,18 +94,33 @@ public class UpdatePlayerTest extends BaseTest {
                 "Duplicate screenName should return 400");
     }
 
-    @Test
-    @Story("BUG: Update password to invalid format")
+    @Test(dataProvider = "invalidPasswords")
+    @Story("BUG: Invalid password accepted on update")
     @Severity(SeverityLevel.NORMAL)
     @Description("Updating password to invalid format should fail")
-    @Issue("BUG-010")
-    public void testUpdatePlayerWithInvalidPassword() {
+    @Issue("BUG-007")
+    public void testUpdatePlayerWithInvalidPassword(String password, String reason) {
         PlayerDto player = createTestPlayer();
-        PlayerDto update = PlayerDto.builder().password(TestDataHelper.shortPassword()).build();
+        PlayerDto update = PlayerDto.builder().password(password).build();
 
         Response response = playerSteps.updateExpectingAnyStatus(SUPERVISOR, player.getId(), update);
 
         Assert.assertEquals(response.statusCode(), StatusCode.BAD_REQUEST.getCode(),
-                "Invalid password should return 400");
+                "Password (" + reason + ") should return 400");
+    }
+
+    @Test(dataProvider = "invalidAges")
+    @Story("BUG: Invalid age accepted on update")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Updating player age outside 17-59 range should fail")
+    @Issue("BUG-010")
+    public void testUpdatePlayerWithInvalidAge(int age, String reason) {
+        PlayerDto player = createTestPlayer();
+        PlayerDto update = PlayerDto.builder().age(age).build();
+
+        Response response = playerSteps.updateExpectingAnyStatus(SUPERVISOR, player.getId(), update);
+
+        Assert.assertEquals(response.statusCode(), StatusCode.BAD_REQUEST.getCode(),
+                "Age (" + reason + ") should return 400");
     }
 }

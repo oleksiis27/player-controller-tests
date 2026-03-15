@@ -19,7 +19,7 @@ public class GetPlayerTest extends BaseTest {
     @Story("BUG: Password returned in GET response")
     @Severity(SeverityLevel.CRITICAL)
     @Description("GET player should NOT return password — security vulnerability")
-    @Issue("BUG-006")
+    @Issue("BUG-005")
     public void testGetPlayerShouldNotReturnPassword() {
         PlayerDto created = createTestPlayer();
         PlayerDto fetched = playerSteps.getPlayerById(created.getId());

@@ -24,7 +24,7 @@ public class TestDataHelper {
 
     private static PlayerDto buildPlayer(Role role) {
         return PlayerDto.builder()
-                .age(faker.number().numberBetween(16, 60))
+                .age(faker.number().numberBetween(17, 60))
                 .gender(randomGender())
                 .login(generateUniqueLogin())
                 .password(validPassword())
@@ -54,7 +54,15 @@ public class TestDataHelper {
         return "Ab1!";
     }
 
-    public static String passwordWithoutSpecialChars() {
-        return "ValidPassword1";
+    public static String longPassword() {
+        return "ValidPassword123";
+    }
+
+    public static String passwordWithoutDigits() {
+        return "ValidPassword!";
+    }
+
+    public static String passwordWithoutLetters() {
+        return "1234567!";
     }
 }

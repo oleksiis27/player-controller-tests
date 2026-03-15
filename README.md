@@ -124,37 +124,47 @@ The API under test has several endpoints that do not follow REST conventions:
 - **Expected:** 200 OK
 - **Actual:** 403 Forbidden
 
-### BUG-003: Duplicate login returns existing player instead of error
+### BUG-002: Duplicate login returns existing player instead of error
 - **Endpoint:** GET /player/create/{editor}
 - **Expected:** 400
 - **Actual:** 200, returns existing player data
 
-### BUG-004: Duplicate screenName creates new player
+### BUG-003: Duplicate screenName creates new player
 - **Endpoint:** GET /player/create/{editor}
 - **Expected:** 400
 - **Actual:** 200, creates player with duplicate screenName
 
-### BUG-005: Invalid password accepted on create
+### BUG-004: Invalid password accepted on create
 - **Endpoint:** GET /player/create/{editor}
-- **Expected:** 400 (password too short / no special chars)
+- **Expected:** 400 (password too short / too long / no digits / no letters)
 - **Actual:** 200
 
-### BUG-006: Password returned in GET response
+### BUG-005: Password returned in GET response
 - **Endpoint:** POST /player/get
 - **Expected:** Password not included in response
 - **Actual:** Password returned in plain text
 
-### BUG-008: Duplicate screenName allowed on update
+### BUG-006: Duplicate screenName allowed on update
 - **Endpoint:** PATCH /player/update/{editor}/{id}
 - **Expected:** 400
 - **Actual:** 200
 
-### BUG-010: Invalid password accepted on update
+### BUG-007: Invalid password accepted on update
 - **Endpoint:** PATCH /player/update/{editor}/{id}
-- **Expected:** 400
+- **Expected:** 400 (password too short / too long / no digits / no letters)
 - **Actual:** 200
 
-### BUG-012: User role can delete players
+### BUG-008: User role can delete players
 - **Endpoint:** DELETE /player/delete/{editor}
 - **Expected:** 403
 - **Actual:** 204
+
+### BUG-009: Age above maximum accepted on create
+- **Endpoint:** GET /player/create/{editor}
+- **Expected:** 400 (age=60, should be younger than 60)
+- **Actual:** 200
+
+### BUG-010: Invalid age accepted on update
+- **Endpoint:** PATCH /player/update/{editor}/{id}
+- **Expected:** 400 (age outside 17-59 range)
+- **Actual:** 200

@@ -43,6 +43,24 @@ public abstract class BaseTest {
         };
     }
 
+    @DataProvider(name = "invalidPasswords")
+    public Object[][] invalidPasswords() {
+        return new Object[][] {
+                { TestDataHelper.shortPassword(), "too short" },
+                { TestDataHelper.longPassword(), "too long" },
+                { TestDataHelper.passwordWithoutDigits(), "no digits" },
+                { TestDataHelper.passwordWithoutLetters(), "no letters" }
+        };
+    }
+
+    @DataProvider(name = "invalidAges")
+    public Object[][] invalidAges() {
+        return new Object[][] {
+                { 16, "below minimum (16)" },
+                { 60, "above maximum (60)" }
+        };
+    }
+
     protected void trackPlayerForCleanup(Long playerId) {
         if (playerId != null) {
             createdPlayerIds.add(playerId);
