@@ -24,22 +24,22 @@ public class DeletePlayerTest extends BaseTest {
     public void testDeletePlayerByEditor(String editor) {
         PlayerDto created = createTestPlayer();
 
-        deleteSteps.deletePlayer(editor, created.getId());
+        playerSteps.deletePlayer(editor, created.getId());
 
-        Assert.assertFalse(getSteps.playerExists(created.getId()),
+        Assert.assertFalse(playerSteps.playerExists(created.getId()),
                 "Deleted player should not exist");
     }
 
     @Test
     @Story("BUG: Delete player with user role editor succeeds")
     @Severity(SeverityLevel.CRITICAL)
-    @Description("Player with 'user' role should not be able to delete other players. Known BUG: allows deletion")
+    @Description("Player with 'user' role should not be able to delete other players.")
     @Issue("BUG-012")
     public void testDeletePlayerWithUserRoleEditor() {
         PlayerDto created = createTestPlayer();
-        PlayerDto fetched = getSteps.getPlayerById(created.getId());
+        PlayerDto fetched = playerSteps.getPlayerById(created.getId());
 
-        Response response = deleteSteps.deleteExpectingAnyStatus(fetched.getLogin(), created.getId());
+        Response response = playerSteps.deleteExpectingAnyStatus(fetched.getLogin(), created.getId());
 
         Assert.assertEquals(response.statusCode(), StatusCode.FORBIDDEN.getCode(),
                 "User role editor should get 403 Forbidden when deleting players");

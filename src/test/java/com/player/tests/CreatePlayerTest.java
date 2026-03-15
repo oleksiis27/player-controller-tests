@@ -24,14 +24,14 @@ public class CreatePlayerTest extends BaseTest {
     @Test(dataProvider = "editors")
     @Story("Positive: Create player with editor")
     @Severity(SeverityLevel.CRITICAL)
-    @Description("Create player with all valid fields and verify via GET. Known BUG-001: admin editor returns 403")
+    @Description("Create player with all valid fields and verify via GET.")
     @Issue("BUG-001")
     public void testCreatePlayerWithEditor(String editor) {
         PlayerDto prepared = TestDataHelper.validPreparedPlayer();
-        PlayerDto created = createSteps.createPlayer(editor, prepared);
+        PlayerDto created = playerSteps.createPlayer(editor, prepared);
         trackPlayerForCleanup(created.getId());
 
-        PlayerDto fetched = getSteps.getPlayerById(created.getId());
+        PlayerDto fetched = playerSteps.getPlayerById(created.getId());
 
         Assert.assertEquals(fetched, prepared, "Fetched player should match the create request");
     }
@@ -50,8 +50,8 @@ public class CreatePlayerTest extends BaseTest {
                 .screenName(TestDataHelper.generateUniqueScreenName())
                 .build();
 
-        Response response = createSteps.createExpectingAnyStatus(SUPERVISOR, request2);
-        PlayerDto player = createSteps.extractIfCreated(response);
+        Response response = playerSteps.createExpectingAnyStatus(SUPERVISOR, request2);
+        PlayerDto player = playerSteps.extractIfCreated(response);
         if (player != null && !player.getId().equals(created1.getId())) {
             trackPlayerForCleanup(player.getId());
         }
@@ -74,8 +74,8 @@ public class CreatePlayerTest extends BaseTest {
                 .screenName(created1.getScreenName())
                 .build();
 
-        Response response = createSteps.createExpectingAnyStatus(SUPERVISOR, request2);
-        PlayerDto player = createSteps.extractIfCreated(response);
+        Response response = playerSteps.createExpectingAnyStatus(SUPERVISOR, request2);
+        PlayerDto player = playerSteps.extractIfCreated(response);
         if (player != null) trackPlayerForCleanup(player.getId());
 
         Assert.assertEquals(response.statusCode(), StatusCode.BAD_REQUEST.getCode(),
@@ -94,8 +94,8 @@ public class CreatePlayerTest extends BaseTest {
                 .screenName(TestDataHelper.generateUniqueScreenName())
                 .build();
 
-        Response response = createSteps.createExpectingAnyStatus(SUPERVISOR, request);
-        PlayerDto player = createSteps.extractIfCreated(response);
+        Response response = playerSteps.createExpectingAnyStatus(SUPERVISOR, request);
+        PlayerDto player = playerSteps.extractIfCreated(response);
         if (player != null) trackPlayerForCleanup(player.getId());
 
         Assert.assertEquals(response.statusCode(), StatusCode.BAD_REQUEST.getCode(),

@@ -23,7 +23,7 @@ public class GetAllPlayersTest extends BaseTest {
     public void testCreatedPlayerAppearsInList() {
         PlayerDto created = createTestPlayer();
 
-        List<Long> playerIds = getSteps.getAllPlayerIds();
+        List<Long> playerIds = playerSteps.getAllPlayerIds();
 
         Assert.assertTrue(playerIds.contains(created.getId()),
                 "Created player should appear in the list");
@@ -36,9 +36,9 @@ public class GetAllPlayersTest extends BaseTest {
     public void testDeletedPlayerDisappearsFromList() {
         PlayerDto created = createTestPlayer();
 
-        deleteSteps.deletePlayer(SUPERVISOR, created.getId());
+        playerSteps.deletePlayer(SUPERVISOR, created.getId());
 
-        List<Long> playerIds = getSteps.getAllPlayerIds();
+        List<Long> playerIds = playerSteps.getAllPlayerIds();
 
         Assert.assertFalse(playerIds.contains(created.getId()),
                 "Deleted player should not appear in the list");

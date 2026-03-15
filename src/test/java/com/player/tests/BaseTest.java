@@ -1,16 +1,10 @@
 package com.player.tests;
 
-import com.player.api.CreatePlayerApi;
-import com.player.api.DeletePlayerApi;
-import com.player.api.GetPlayerApi;
-import com.player.api.UpdatePlayerApi;
+import com.player.api.PlayerApi;
 import com.player.config.AppConfig;
 import com.player.data.TestDataHelper;
 import com.player.models.PlayerDto;
-import com.player.steps.CreatePlayerSteps;
-import com.player.steps.DeletePlayerSteps;
-import com.player.steps.GetPlayerSteps;
-import com.player.steps.UpdatePlayerSteps;
+import com.player.steps.PlayerSteps;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -26,23 +20,17 @@ public abstract class BaseTest {
 
     private final List<Long> createdPlayerIds = new CopyOnWriteArrayList<>();
 
-    protected CreatePlayerSteps createSteps;
-    protected GetPlayerSteps getSteps;
-    protected UpdatePlayerSteps updateSteps;
-    protected DeletePlayerSteps deleteSteps;
+    protected PlayerSteps playerSteps;
 
     @BeforeClass
     public void setUp() {
-        createSteps = new CreatePlayerSteps(new CreatePlayerApi());
-        getSteps = new GetPlayerSteps(new GetPlayerApi());
-        updateSteps = new UpdatePlayerSteps(new UpdatePlayerApi());
-        deleteSteps = new DeletePlayerSteps(new DeletePlayerApi());
+        playerSteps = new PlayerSteps(new PlayerApi());
     }
 
     @AfterClass(alwaysRun = true)
     public void tearDown() {
         for (Long id : createdPlayerIds) {
-            deleteSteps.deleteSafely(SUPERVISOR, id);
+            playerSteps.deleteSafely(SUPERVISOR, id);
         }
         createdPlayerIds.clear();
     }
@@ -63,7 +51,7 @@ public abstract class BaseTest {
 
     protected PlayerDto createTestPlayer() {
         PlayerDto request = TestDataHelper.validPreparedPlayer();
-        PlayerDto created = createSteps.createPlayer(SUPERVISOR, request);
+        PlayerDto created = playerSteps.createPlayer(SUPERVISOR, request);
         trackPlayerForCleanup(created.getId());
         return created;
     }

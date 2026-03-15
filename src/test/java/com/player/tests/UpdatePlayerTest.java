@@ -27,8 +27,8 @@ public class UpdatePlayerTest extends BaseTest {
         PlayerDto player = createTestPlayer();
         PlayerDto update = PlayerDto.builder().age(30).build();
 
-        updateSteps.updatePlayer(SUPERVISOR, player.getId(), update);
-        PlayerDto fetched = getSteps.getPlayerById(player.getId());
+        playerSteps.updatePlayer(SUPERVISOR, player.getId(), update);
+        PlayerDto fetched = playerSteps.getPlayerById(player.getId());
 
         Assert.assertEquals(fetched.getAge(), Integer.valueOf(30), "Age should be updated to 30");
     }
@@ -42,8 +42,8 @@ public class UpdatePlayerTest extends BaseTest {
         String newScreenName = TestDataHelper.generateUniqueScreenName();
         PlayerDto update = PlayerDto.builder().screenName(newScreenName).build();
 
-        updateSteps.updatePlayer(SUPERVISOR, player.getId(), update);
-        PlayerDto fetched = getSteps.getPlayerById(player.getId());
+        playerSteps.updatePlayer(SUPERVISOR, player.getId(), update);
+        PlayerDto fetched = playerSteps.getPlayerById(player.getId());
 
         Assert.assertEquals(fetched.getScreenName(), newScreenName, "ScreenName should be updated");
     }
@@ -54,13 +54,13 @@ public class UpdatePlayerTest extends BaseTest {
     @Description("Update player gender to valid value and verify via GET")
     public void testUpdatePlayerGender() {
         PlayerDto player = createTestPlayer();
-        PlayerDto current = getSteps.getPlayerById(player.getId());
+        PlayerDto current = playerSteps.getPlayerById(player.getId());
 
         Gender newGender = current.getGender() == Gender.MALE ? Gender.FEMALE : Gender.MALE;
         PlayerDto update = PlayerDto.builder().gender(newGender).build();
 
-        updateSteps.updatePlayer(SUPERVISOR, player.getId(), update);
-        PlayerDto fetched = getSteps.getPlayerById(player.getId());
+        playerSteps.updatePlayer(SUPERVISOR, player.getId(), update);
+        PlayerDto fetched = playerSteps.getPlayerById(player.getId());
 
         Assert.assertEquals(fetched.getGender(), newGender, "Gender should be updated");
     }
@@ -73,7 +73,7 @@ public class UpdatePlayerTest extends BaseTest {
         PlayerDto player = createTestPlayer();
         PlayerDto update = PlayerDto.builder().password("NewValid1!").build();
 
-        updateSteps.updatePlayer(SUPERVISOR, player.getId(), update);
+        playerSteps.updatePlayer(SUPERVISOR, player.getId(), update);
     }
 
     @Test
@@ -85,10 +85,10 @@ public class UpdatePlayerTest extends BaseTest {
         PlayerDto player1 = createTestPlayer();
         PlayerDto player2 = createTestPlayer();
 
-        PlayerDto fetched1 = getSteps.getPlayerById(player1.getId());
+        PlayerDto fetched1 = playerSteps.getPlayerById(player1.getId());
         PlayerDto update = PlayerDto.builder().screenName(fetched1.getScreenName()).build();
 
-        Response response = updateSteps.updateExpectingAnyStatus(SUPERVISOR, player2.getId(), update);
+        Response response = playerSteps.updateExpectingAnyStatus(SUPERVISOR, player2.getId(), update);
 
         Assert.assertEquals(response.statusCode(), StatusCode.BAD_REQUEST.getCode(),
                 "Duplicate screenName should return 400");
@@ -103,7 +103,7 @@ public class UpdatePlayerTest extends BaseTest {
         PlayerDto player = createTestPlayer();
         PlayerDto update = PlayerDto.builder().password(TestDataHelper.shortPassword()).build();
 
-        Response response = updateSteps.updateExpectingAnyStatus(SUPERVISOR, player.getId(), update);
+        Response response = playerSteps.updateExpectingAnyStatus(SUPERVISOR, player.getId(), update);
 
         Assert.assertEquals(response.statusCode(), StatusCode.BAD_REQUEST.getCode(),
                 "Invalid password should return 400");

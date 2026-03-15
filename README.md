@@ -18,14 +18,14 @@ API test automation framework for testing the Player Controller API.
 ## Architecture
 
 ```
-Tests → Steps → API (per endpoint) → REST Assured
-                 ↓
-          BaseApi (shared RequestSpecification + Allure filter)
+Tests → PlayerSteps → PlayerApi → REST Assured
+                        ↓
+                 BaseApi (shared RequestSpecification + Allure filter)
 ```
 
 **Layers:**
-- **API Layer** (`src/main`) — one class per endpoint, each extends `BaseApi` with shared spec
-- **Steps Layer** (`src/main`) — business logic orchestration with `@Step` annotations for Allure
+- **API Layer** (`src/main`) — one class per entity, extends `BaseApi` with shared spec
+- **Steps Layer** (`src/main`) — one class per entity, business logic with `@Step` annotations for Allure
 - **Models** (`src/main`) — single `PlayerDto` with Builder pattern, `Gender`/`Role`/`StatusCode` enums
 - **Tests** (`src/test`) — only test classes, clean test methods using steps
 - **Test Data** (`src/main`) — `TestDataHelper` with DataFaker for data generation
@@ -38,10 +38,7 @@ src/
 ├── main/java/com/player/
 │   ├── api/
 │   │   ├── BaseApi.java                   # Shared RequestSpecification + Allure filter
-│   │   ├── CreatePlayerApi.java           # GET /player/create/{editor}
-│   │   ├── GetPlayerApi.java              # POST /player/get + GET /player/get/all
-│   │   ├── UpdatePlayerApi.java           # PATCH /player/update/{editor}/{id}
-│   │   └── DeletePlayerApi.java           # DELETE /player/delete/{editor}
+│   │   └── PlayerApi.java                 # All player endpoints (create, get, update, delete)
 │   ├── config/
 │   │   └── AppConfig.java                 # Owner interface for configuration
 │   ├── data/
@@ -55,10 +52,7 @@ src/
 │   │   ├── Role.java                      # Enum: SUPERVISOR, ADMIN, USER
 │   │   └── StatusCode.java               # Enum: OK, NO_CONTENT, BAD_REQUEST, FORBIDDEN
 │   └── steps/
-│       ├── CreatePlayerSteps.java
-│       ├── GetPlayerSteps.java
-│       ├── UpdatePlayerSteps.java
-│       └── DeletePlayerSteps.java
+│       └── PlayerSteps.java               # All player business logic (create, get, update, delete)
 ├── test/java/com/player/tests/
 │   ├── BaseTest.java                      # Setup/teardown, cleanup tracking, DataProvider
 │   ├── CreatePlayerTest.java

@@ -22,10 +22,10 @@ public class GetPlayerTest extends BaseTest {
     @Issue("BUG-006")
     public void testGetPlayerShouldNotReturnPassword() {
         PlayerDto created = createTestPlayer();
-        PlayerDto fetched = getSteps.getPlayerById(created.getId());
+        PlayerDto fetched = playerSteps.getPlayerById(created.getId());
 
         Assert.assertNull(fetched.getPassword(),
-                "Password should NOT be returned in response. Known BUG: password is exposed");
+                "Password should NOT be returned in response.");
     }
 
     @Test
@@ -33,7 +33,7 @@ public class GetPlayerTest extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Description("Getting player with non-existing ID should return empty response")
     public void testGetNonExistingPlayer() {
-        Assert.assertFalse(getSteps.playerExists(999999999L),
+        Assert.assertFalse(playerSteps.playerExists(999999999L),
                 "Non-existing player should not exist");
     }
 }
