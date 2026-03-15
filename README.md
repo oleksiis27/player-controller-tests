@@ -6,7 +6,7 @@ API test automation framework for testing the Player Controller API.
 
 | Tool | Purpose |
 |---|---|
-| Java 11+ | Language |
+| Java 17+ | Language |
 | TestNG | Test runner + assertions |
 | REST Assured | HTTP client |
 | Allure | Reporting |
@@ -26,9 +26,10 @@ Tests → Steps → API (per endpoint) → REST Assured
 **Layers:**
 - **API Layer** (`src/main`) — one class per endpoint, each extends `BaseApi` with shared spec
 - **Steps Layer** (`src/main`) — business logic orchestration with `@Step` annotations for Allure
-- **Models** (`src/main`) — single `PlayerDto` with Builder pattern, `Gender`/`Role` enums
+- **Models** (`src/main`) — single `PlayerDto` with Builder pattern, `Gender`/`Role`/`StatusCode` enums
 - **Tests** (`src/test`) — only test classes, clean test methods using steps
 - **Test Data** (`src/main`) — `TestDataHelper` with DataFaker for data generation
+- **Listeners** (`src/main`) — `TestListener` for logging, `DynamicThreadListener` for runtime thread-count
 
 ## Project Structure
 
@@ -46,25 +47,27 @@ src/
 │   ├── data/
 │   │   └── TestDataHelper.java            # DataFaker-based test data generation
 │   ├── listeners/
-│   │   └── TestListener.java              # TestNG listener for logging
+│   │   ├── TestListener.java              # TestNG listener for logging
+│   │   └── DynamicThreadListener.java     # Runtime thread-count from config/system property
 │   ├── models/
 │   │   ├── PlayerDto.java                 # Single DTO with Builder, @JsonInclude(NON_NULL)
 │   │   ├── Gender.java                    # Enum: MALE, FEMALE
-│   │   └── Role.java                      # Enum: SUPERVISOR, ADMIN, USER
+│   │   ├── Role.java                      # Enum: SUPERVISOR, ADMIN, USER
+│   │   └── StatusCode.java               # Enum: OK, NO_CONTENT, BAD_REQUEST, FORBIDDEN
 │   └── steps/
 │       ├── CreatePlayerSteps.java
 │       ├── GetPlayerSteps.java
 │       ├── UpdatePlayerSteps.java
 │       └── DeletePlayerSteps.java
 ├── test/java/com/player/tests/
-│   ├── BaseTest.java                      # Setup/teardown, cleanup tracking
+│   ├── BaseTest.java                      # Setup/teardown, cleanup tracking, DataProvider
 │   ├── CreatePlayerTest.java
 │   ├── GetPlayerTest.java
 │   ├── UpdatePlayerTest.java
 │   ├── DeletePlayerTest.java
 │   └── GetAllPlayersTest.java
 └── test/resources/
-    ├── testng.xml                         # parallel="methods" thread-count="3"
+    ├── testng.xml                         # parallel="methods", dynamic thread-count
     ├── app.properties
     ├── allure.properties
     └── logback-test.xml
@@ -73,12 +76,17 @@ src/
 ## How to Run
 
 ### Prerequisites
-- Java 11+ installed
+- Java 17+ installed
 - `JAVA_HOME` environment variable set
 
 ### Run all tests
 ```bash
 ./gradlew test
+```
+
+### Run with custom thread count
+```bash
+./gradlew test -Dthread.count=5
 ```
 
 ### Run specific test class
@@ -104,8 +112,16 @@ Allure report is published to GitHub Pages after each run.
 
 ## Test Execution
 
-Tests run in **3 parallel threads** (`parallel="methods"`, `thread-count="3"`).
+Tests run in parallel (`parallel="methods"`), thread count is configured via `app.properties` (default: 3) and can be overridden with `-Dthread.count=N`.
+
 Each test class creates its own test data and cleans up after all methods via `@AfterClass`.
+
+## API Design Notes
+
+The API under test has several endpoints that do not follow REST conventions:
+- **GET** `/player/create/{editor}` — player creation uses GET instead of POST
+- **POST** `/player/get` — fetching a player by ID uses POST instead of GET
+- **DELETE** `/player/delete/{editor}` — passes player ID in request body instead of path
 
 ## Found Bugs
 
