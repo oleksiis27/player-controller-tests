@@ -18,13 +18,13 @@ API test automation framework for testing the Player Controller API.
 ## Architecture
 
 ```
-Tests → PlayerSteps → PlayerApi → REST Assured
-                        ↓
-                 BaseApi (shared RequestSpecification + Allure filter)
+Tests → PlayerSteps → PlayerApiClient → REST Assured
+                          ↓
+                   BaseApiClient (shared RequestSpecification + Allure filter)
 ```
 
 **Layers:**
-- **API Layer** (`src/main`) — one class per entity, extends `BaseApi` with shared spec
+- **API Layer** (`src/main`) — one class per entity, extends `BaseApiClient` with shared spec
 - **Steps Layer** (`src/main`) — one class per entity, business logic with `@Step` annotations for Allure
 - **Models** (`src/main`) — single `PlayerDto` with Builder pattern, `Gender`/`Role`/`StatusCode` enums
 - **Tests** (`src/test`) — only test classes, clean test methods using steps
@@ -37,8 +37,8 @@ Tests → PlayerSteps → PlayerApi → REST Assured
 src/
 ├── main/java/com/player/
 │   ├── api/
-│   │   ├── BaseApi.java                   # Shared RequestSpecification + Allure filter
-│   │   └── PlayerApi.java                 # All player endpoints (create, get, update, delete)
+│   │   ├── BaseApiClient.java              # Shared RequestSpecification + Allure filter
+│   │   └── PlayerApiClient.java           # All player endpoints (create, get, update, delete)
 │   ├── config/
 │   │   └── AppConfig.java                 # Owner interface for configuration
 │   ├── data/
